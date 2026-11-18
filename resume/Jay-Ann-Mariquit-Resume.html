@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jay Ann B. Mariquit | Resume</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --primary: #0f172a;
+      --accent: #0ea5e9;
+      --text: #1f2937;
+      --muted: #526174;
+      --line: rgba(15, 23, 42, 0.12);
+      --soft: #ecf8ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #edf6ff 0%, #f7fafc 100%);
+      color: var(--text);
+      padding: 40px 20px;
+    }
+
+    .resume {
+      max-width: 920px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+      padding: 36px 32px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.1rem, 3vw, 2.9rem);
+      letter-spacing: -0.05em;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.96rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .contact {
+      text-align: right;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+      font-weight: 500;
+    }
+
+    .section {
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      font-size: 0.86rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 800;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    .summary {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+      font-size: 0.97rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--soft);
+      border: 1px solid rgba(14,165,233,0.15);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .card p, .card li {
+      color: var(--text);
+      line-height: 1.7;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    li + li {
+      margin-top: 6px;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .skill {
+      border: 1px solid rgba(14,165,233,0.3);
+      background: rgba(14,165,233,0.08);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 700px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .resume {
+        padding: 24px 18px;
+      }
+
+      .contact {
+        text-align: left;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .resume {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        max-width: 100%;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="resume">
+    <div class="header">
+      <div>
+        <h1>Jay Ann B. Mariquit</h1>
+        <div class="subtitle">Information Technology Student | Web Development Enthusiast</div>
+      </div>
+      <div class="contact">
+        <div>jayannmariquit9@gmail.com</div>
+        <div>09630919859</div>
+        <div>P-6 Kinura, Kalilangan Bukidnon</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Profile</div>
+      <p class="summary">
+        Information Technology student with a strong interest in computers, technology, and web development.
+        Hardworking, responsible, and always willing to learn new things. Focused on improving technical skills,
+        expanding knowledge, and building a strong future in the field of Information Technology.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Education</div>
+      <div class="two-col">
+        <div class="card">
+          <h3>Elementary</h3>
+          <p>Wao Central Community School</p>
+        </div>
+        <div class="card">
+          <h3>Senior High School</h3>
+          <p>Masiricampo Abantas Memorial National High</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 12px;">
+        <h3>Tertiary Education</h3>
+        <p>Torres Capitol College</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Experience</div>
+      <div class="two-col">
+        <div class="card">
+          <h3>Capstone Project Development</h3>
+          <ul>
+            <li>Worked on project planning and system development.</li>
+            <li>Applied teamwork and problem-solving strategies.</li>
+            <li>Built and refined technical outputs for academic use.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Technical Skills</h3>
+          <ul>
+            <li>Microsoft Office</li>
+            <li>Computer Troubleshooting</li>
+            <li>Basic Networking</li>
+            <li>Data Encoding</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Skills</div>
+      <div class="skills">
+        <span class="skill">HTML</span>
+        <span class="skill">CSS</span>
+        <span class="skill">JavaScript</span>
+        <span class="skill">Python</span>
+        <span class="skill">MySQL</span>
+        <span class="skill">Bootstrap</span>
+        <span class="skill">Web Development</span>
+        <span class="skill">IT Support</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
