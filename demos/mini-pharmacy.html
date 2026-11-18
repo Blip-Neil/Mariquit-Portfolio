@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PharmaVend Demo</title>
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+  <div class="demo-shell">
+    <div class="topbar">
+      <h1>PharmaVend Demo</h1>
+      <a href="../index.html" style="color:#67e8f9; text-decoration:none;">← Back to Portfolio</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat-box"><span>Total Items</span><strong id="totalItems">0</strong></div>
+      <div class="stat-box"><span>Low Stock</span><strong id="lowStock">0</strong></div>
+      <div class="stat-box"><span>Inventory Value</span><strong id="inventoryValue">₱0</strong></div>
+    </div>
+
+    <div class="grid" style="margin-top: 20px;">
+      <div class="panel">
+        <h3>Add Medicine</h3>
+        <form id="medicineForm">
+          <input type="text" id="name" placeholder="Medicine name" required />
+          <input type="number" id="qty" min="1" placeholder="Quantity" required />
+          <input type="number" id="price" min="1" step="0.01" placeholder="Unit price" required />
+          <button type="submit">Add to Inventory</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h3>Inventory Snapshot</h3>
+        <ul id="stockList" style="padding-left: 18px; line-height: 1.9;"></ul>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Medicine Inventory</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="medicineTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('medicineForm');
+    const tableBody = document.getElementById('medicineTable');
+    const stockList = document.getElementById('stockList');
+    let medicines = JSON.parse(localStorage.getItem('pharmaDemo') || '[{"name":"Paracetamol","qty":40,"price":12},{"name":"Amoxicillin","qty":18,"price":25},{"name":"Vitamin C","qty":10,"price":18}]');
+
+    function save() {
+      localStorage.setItem('pharmaDemo', JSON.stringify(medicines));
+    }
+
+    function render() {
+      tableBody.innerHTML = '';
+      let totalItems = 0, inventoryValue = 0, lowStock = 0;
+
+      medicines.forEach(item => {
+        totalItems += item.qty;
+        inventoryValue += item.qty * item.price;
+        if (item.qty <= 10) lowStock++;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.qty}</td>
+          <td>₱${Number(item.price).toFixed(2)}</td>
+          <td>₱${(item.qty * item.price).toFixed(2)}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      stockList.innerHTML = medicines.map(item => 
+        `<li>${item.name}: ${item.qty} pcs ${item.qty <= 10 ? '(low stock)' : ''}</li>`
+      ).join('');
+
+      document.getElementById('totalItems').textContent = totalItems;
+      document.getElementById('lowStock').textContent = lowStock;
+      document.getElementById('inventoryValue').textContent = '₱' + inventoryValue.toFixed(2);
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const qty = Number(document.getElementById('qty').value);
+      const price = Number(document.getElementById('price').value);
+
+      const existing = medicines.find(item => item.name.toLowerCase() === name.toLowerCase());
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        medicines.push({ name, qty, price });
+      }
+
+      save();
+      render();
+      form.reset();
+    });
+
+    render();
+  </script>
+</body>
+</html>

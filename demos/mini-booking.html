@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking System</title>
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+  <div class="demo-shell">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+      <h1>Booking System</h1>
+      <a href="../index.html" style="color:#67e8f9; text-decoration:none;">← Back to Portfolio</a>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Book an Appointment</h3>
+        <form id="bookingForm">
+          <input type="text" id="customerName" placeholder="Customer name" required />
+          <select id="serviceType">
+            <option value="Web Design">Web Design</option>
+            <option value="IT Support">IT Support</option>
+            <option value="System Setup">System Setup</option>
+            <option value="Maintenance">Maintenance</option>
+          </select>
+          <input type="date" id="bookingDate" required />
+          <button type="submit">Book Now</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h3>Upcoming Bookings</h3>
+        <ul id="bookingList" class="booking-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let bookings = JSON.parse(localStorage.getItem('bookingDemo') || '[{"name":"Sofia","service":"Web Design","date":"2026-10-15"},{"name":"Liam","service":"IT Support","date":"2026-10-17"}]');
+
+    const bookingForm = document.getElementById('bookingForm');
+    const bookingList = document.getElementById('bookingList');
+
+    function save() { localStorage.setItem('bookingDemo', JSON.stringify(bookings)); }
+
+    function render() {
+      bookingList.innerHTML = bookings.map(item => `
+        <li><strong>${item.name}</strong> - ${item.service} on ${item.date}</li>
+      `).join('');
+    }
+
+    bookingForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('customerName').value.trim();
+      const service = document.getElementById('serviceType').value;
+      const date = document.getElementById('bookingDate').value;
+      bookings.push({ name, service, date });
+      save();
+      render();
+      bookingForm.reset();
+    });
+
+    render();
+  </script>
+</body>
+</html>

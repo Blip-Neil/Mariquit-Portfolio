@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Board</title>
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+  <div class="demo-shell">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+      <h1>Task Board</h1>
+      <a href="../index.html" style="color:#67e8f9; text-decoration:none;">← Back to Portfolio</a>
+    </div>
+
+    <div class="panel">
+      <form id="taskForm">
+        <input id="taskInput" type="text" placeholder="Add a new task..." required />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+
+    <div class="board" style="margin-top: 20px;">
+      <div class="column">
+        <h3>To Do</h3>
+        <div id="todoList"></div>
+      </div>
+      <div class="column">
+        <h3>In Progress</h3>
+        <div id="progressList"></div>
+      </div>
+      <div class="column">
+        <h3>Done</h3>
+        <div id="doneList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tasks = JSON.parse(localStorage.getItem('taskBoardDemo') || '[{"title":"Design landing page","status":"todo"},{"title":"Fix login flow","status":"progress"},{"title":"Send client meeting notes","status":"done"}]');
+    const taskForm = document.getElementById('taskForm');
+    const taskInput = document.getElementById('taskInput');
+
+    function save() { localStorage.setItem('taskBoardDemo', JSON.stringify(tasks)); }
+
+    function render() {
+      const sections = {
+        todo: document.getElementById('todoList'),
+        progress: document.getElementById('progressList'),
+        done: document.getElementById('doneList')
+      };
+
+      Object.values(sections).forEach(el => el.innerHTML = '');
+
+      tasks.forEach((task, index) => {
+        const item = document.createElement('div');
+        item.className = 'task';
+        item.innerHTML = `
+          <strong>${task.title}</strong>
+          <div>
+            <button data-index="${index}" data-next="${task.status === 'todo' ? 'progress' : task.status === 'progress' ? 'done' : 'todo'}">
+              ${task.status === 'done' ? 'Reopen' : 'Move Forward'}
+            </button>
+          </div>
+        `;
+        sections[task.status].appendChild(item);
+      });
+    }
+
+    taskForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const value = taskInput.value.trim();
+      if (!value) return;
+      tasks.push({ title: value, status: 'todo' });
+      save();
+      render();
+      taskForm.reset();
+    });
+
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-index]');
+      if (!btn) return;
+      const index = Number(btn.dataset.index);
+      const next = btn.dataset.next;
+      tasks[index].status = next;
+      save();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

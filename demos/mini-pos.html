@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cafe Delights POS</title>
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+  <div class="demo-shell">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+      <h1>Cafe Delights POS</h1>
+      <a href="../index.html" style="color:#67e8f9; text-decoration:none;">← Back to Portfolio</a>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Menu</h3>
+        <div class="items" id="menuItems"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Current Order</h3>
+        <div id="cartItems"></div>
+        <div class="total">Total: ₱<span id="totalPrice">0.00</span></div>
+        <button onclick="checkout()">Print Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menu = [
+      { name: 'Espresso', price: 60 },
+      { name: 'Latte', price: 110 },
+      { name: 'Burger', price: 150 },
+      { name: 'Pasta', price: 180 },
+      { name: 'Fries', price: 90 },
+      { name: 'Cake', price: 120 }
+    ];
+
+    let cart = [];
+    const menuItems = document.getElementById('menuItems');
+    const cartItems = document.getElementById('cartItems');
+    const totalPrice = document.getElementById('totalPrice');
+
+    function renderMenu() {
+      menuItems.innerHTML = menu.map(item => `
+        <div class="item" onclick="addToCart('${item.name}', ${item.price})">
+          <div>☕</div>
+          <strong>${item.name}</strong>
+          <span>₱${item.price}</span>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) existing.qty += 1;
+      else cart.push({ name, price, qty: 1 });
+      renderCart();
+    }
+
+    function renderCart() {
+      cartItems.innerHTML = cart.length ? cart.map(item => `
+        <div class="cart-item">
+          <span>${item.name} x${item.qty}</span>
+          <span>₱${(item.price * item.qty).toFixed(2)}</span>
+        </div>
+      `).join('') : '<p>No items in the cart yet.</p>';
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      totalPrice.textContent = total.toFixed(2);
+    }
+
+    function checkout() {
+      if (!cart.length) return alert('Cart is empty.');
+      alert('Receipt printed successfully.');
+      cart = [];
+      renderCart();
+    }
+
+    renderMenu();
+    renderCart();
+  </script>
+</body>
+</html>

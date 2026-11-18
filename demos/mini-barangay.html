@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barangay Records</title>
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+  <div class="demo-shell">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+      <h1>Barangay Records</h1>
+      <a href="../index.html" style="color:#67e8f9; text-decoration:none;">← Back to Portfolio</a>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Add Resident</h3>
+        <form id="residentForm">
+          <input type="text" id="name" placeholder="Resident name" required />
+          <input type="text" id="address" placeholder="Address" required />
+          <input type="text" id="status" placeholder="Status (e.g. Active)" required />
+          <button type="submit">Save Record</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h3>Residents</h3>
+        <input type="text" class="search" id="searchInput" placeholder="Search resident..." />
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Address</th><th>Status</th></tr>
+          </thead>
+          <tbody id="residentTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let residents = JSON.parse(localStorage.getItem('barangayDemo') || '[{"name":"Maria Cruz","address":"Zone 1","status":"Active"},{"name":"Rico Santos","address":"Zone 3","status":"Active"},{"name":"Lola Dela Cruz","address":"Zone 5","status":"Senior"}]');
+    const residentForm = document.getElementById('residentForm');
+    const residentTable = document.getElementById('residentTable');
+    const searchInput = document.getElementById('searchInput');
+
+    function save() { localStorage.setItem('barangayDemo', JSON.stringify(residents)); }
+
+    function renderRecords(filter = '') {
+      const filtered = residents.filter(r => r.name.toLowerCase().includes(filter.toLowerCase()));
+      residentTable.innerHTML = filtered.map(r => `
+        <tr>
+          <td>${r.name}</td>
+          <td>${r.address}</td>
+          <td>${r.status}</td>
+        </tr>
+      `).join('');
+    }
+
+    residentForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const status = document.getElementById('status').value.trim();
+      residents.push({ name, address, status });
+      save();
+      renderRecords(searchInput.value);
+      residentForm.reset();
+    });
+
+    searchInput.addEventListener('input', e => renderRecords(e.target.value));
+    renderRecords();
+  </script>
+</body>
+</html>

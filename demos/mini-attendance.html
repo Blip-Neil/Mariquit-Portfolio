@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Tracker</title>
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+  <div class="demo-shell">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+      <h1>Student Attendance</h1>
+      <a href="../index.html" style="color:#67e8f9; text-decoration:none;">← Back to Portfolio</a>
+    </div>
+    <div class="stats">
+      <div class="stat-box"><span>Total</span><strong id="totalCount">0</strong></div>
+      <div class="stat-box"><span>Present</span><strong id="presentCount">0</strong></div>
+      <div class="stat-box"><span>Absent</span><strong id="absentCount">0</strong></div>
+    </div>
+
+    <div class="grid" style="margin-top: 20px;">
+      <div class="panel">
+        <h3>Add Student</h3>
+        <form id="studentForm">
+          <input type="text" id="studentName" placeholder="Student name" required />
+          <button type="submit">Add Student</button>
+        </form>
+      </div>
+      <div class="panel">
+        <h3>Mark Attendance</h3>
+        <form id="attendanceForm">
+          <select id="studentSelect"></select>
+          <select id="statusSelect">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+          </select>
+          <button type="submit">Save Attendance</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Attendance List</h3>
+      <table>
+        <thead>
+          <tr><th>Student</th><th>Status</th><th>Last Updated</th></tr>
+        </thead>
+        <tbody id="attendanceTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const studentForm = document.getElementById('studentForm');
+    const attendanceForm = document.getElementById('attendanceForm');
+    const studentSelect = document.getElementById('studentSelect');
+    const attendanceTable = document.getElementById('attendanceTable');
+
+    let students = JSON.parse(localStorage.getItem('attendanceDemo') || '[{"name":"Alice","status":"Present","date":"Today"},{"name":"Ben","status":"Absent","date":"Today"},{"name":"Cara","status":"Present","date":"Today"}]');
+
+    function save() { localStorage.setItem('attendanceDemo', JSON.stringify(students)); }
+
+    function render() {
+      studentSelect.innerHTML = students.map((student, index) => `<option value="${index}">${student.name}</option>`).join('');
+      attendanceTable.innerHTML = students.map(student => `
+        <tr>
+          <td>${student.name}</td>
+          <td>${student.status}</td>
+          <td>${student.date}</td>
+        </tr>
+      `).join('');
+
+      const present = students.filter(s => s.status === 'Present').length;
+      const absent = students.filter(s => s.status === 'Absent').length;
+      document.getElementById('totalCount').textContent = students.length;
+      document.getElementById('presentCount').textContent = present;
+      document.getElementById('absentCount').textContent = absent;
+    }
+
+    studentForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('studentName').value.trim();
+      if (!name) return;
+      students.push({ name, status: 'Absent', date: 'Today' });
+      save();
+      render();
+      studentForm.reset();
+    });
+
+    attendanceForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const index = Number(studentSelect.value);
+      const status = document.getElementById('statusSelect').value;
+      students[index].status = status;
+      students[index].date = new Date().toLocaleDateString();
+      save();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

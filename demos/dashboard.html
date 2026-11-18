@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Demo Dashboard</title>
+  <link rel="stylesheet" href="demo.css" />
+  <style>
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(94, 234, 212, 0.14), transparent 25%),
+        radial-gradient(circle at bottom center, rgba(125, 211, 252, 0.16), transparent 30%),
+        linear-gradient(135deg, #050c16, #0a1424 35%, #0d1728 100%);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(6, 11, 18, 0.55);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 18px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      box-shadow: 0 16px 30px rgba(2, 6, 23, 0.2);
+    }
+
+    .feature-panel {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin: 24px 0 26px;
+    }
+
+    .feature-highlight {
+      background: linear-gradient(135deg, rgba(94, 234, 212, 0.16), rgba(125, 211, 252, 0.08), rgba(15, 23, 42, 0.88));
+      border: 1px solid rgba(94, 234, 212, 0.26);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 24px 40px rgba(2, 6, 23, 0.32);
+      backdrop-filter: blur(12px);
+      transform: translateY(0);
+      transition: transform 0.25s ease;
+    }
+
+    .feature-highlight:hover {
+      transform: translateY(-4px);
+    }
+
+    .feature-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--accent);
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .feature-highlight h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      letter-spacing: -0.04em;
+    }
+
+    .feature-highlight p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    .feature-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .feature-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .feature-actions a:hover {
+      transform: translateY(-2px);
+    }
+
+    .feature-actions .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #031b23;
+      box-shadow: 0 12px 24px rgba(94, 234, 212, 0.2);
+    }
+
+    .feature-actions .secondary {
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: var(--text);
+    }
+
+    .feature-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .feature-box {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .feature-box strong {
+      display: block;
+      font-size: 1.7rem;
+      margin: 8px 0 4px;
+      color: var(--accent);
+    }
+
+    .feature-box span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .spotlight-nav {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .spotlight-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(148, 163, 184, 0.4);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .spotlight-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(94, 234, 212, 0.6);
+      transform: scale(1.1);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0 24px;
+    }
+
+    .filter-btn {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--muted);
+      padding: 0.7rem 1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: rgba(94, 234, 212, 0.12);
+      border-color: rgba(94, 234, 212, 0.45);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .demo-card {
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      opacity: 1;
+      transform: translateY(0);
+      box-shadow: 0 14px 24px rgba(2, 6, 23, 0.18);
+    }
+
+    .demo-card.hidden {
+      display: none;
+    }
+
+    .demo-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      border-color: var(--accent);
+      box-shadow: 0 20px 34px rgba(94, 234, 212, 0.12);
+    }
+
+    .demo-card .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .demo-card .emoji {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .demo-card .badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(94, 234, 212, 0.08);
+      border: 1px solid rgba(94, 234, 212, 0.22);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+    }
+
+    .demo-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+
+    .demo-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .demo-card a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    @media (max-width: 720px) {
+      .feature-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-shell">
+    <div class="topbar">
+      <h1>Mini Demo Dashboard</h1>
+      <a href="../index.html">← Back to Portfolio</a>
+    </div>
+
+    <div class="panel">
+      <p style="margin: 0; color: var(--muted);">A curated set of lightweight systems built as live demos for portfolio showcase.</p>
+    </div>
+
+    <div class="feature-panel">
+      <div class="feature-highlight">
+        <div class="feature-meta">Featured Demo</div>
+        <h2 id="spotlight-title">PharmaVend</h2>
+        <p id="spotlight-description">Built for quick medicine tracking, stock visibility, and simple transactions—ideal for a lightweight healthcare management workflow.</p>
+        <div class="feature-actions">
+          <a class="primary" id="spotlight-link" href="mini-pharmacy.html">Open Demo</a>
+          <a class="secondary" href="../index.html#projects">See Portfolio</a>
+        </div>
+        <div class="spotlight-nav" aria-label="Featured demo switcher">
+          <button class="spotlight-dot active" data-index="0" aria-label="View featured demo 1"></button>
+          <button class="spotlight-dot" data-index="1" aria-label="View featured demo 2"></button>
+          <button class="spotlight-dot" data-index="2" aria-label="View featured demo 3"></button>
+        </div>
+      </div>
+      <div class="feature-stats">
+        <div class="feature-box">
+          <span>Systems</span>
+          <strong>6</strong>
+          <span>Live demos</span>
+        </div>
+        <div class="feature-box">
+          <span>Focus</span>
+          <strong>Mini</strong>
+          <span>Tier builds</span>
+        </div>
+        <div class="feature-box">
+          <span>Use case</span>
+          <strong>Portfolio</strong>
+          <span>Showcase</span>
+        </div>
+        <div class="feature-box">
+          <span>Style</span>
+          <strong>Clean</strong>
+          <span>Modern UI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="operations">Operations</button>
+      <button class="filter-btn" data-filter="business">Business</button>
+      <button class="filter-btn" data-filter="productivity">Productivity</button>
+    </div>
+
+    <div class="dash-grid">
+      <div class="demo-card" data-category="operations">
+        <div>
+          <div class="card-top">
+            <div class="emoji">🏥</div>
+            <span class="badge">Operations</span>
+          </div>
+          <h3>PharmaVend</h3>
+          <p>Inventory and medicine stock monitoring.</p>
+        </div>
+        <a href="mini-pharmacy.html">Open Demo →</a>
+      </div>
+
+      <div class="demo-card" data-category="operations">
+        <div>
+          <div class="card-top">
+            <div class="emoji">📚</div>
+            <span class="badge">Operations</span>
+          </div>
+          <h3>Attendance</h3>
+          <p>Daily student attendance tracking system.</p>
+        </div>
+        <a href="mini-attendance.html">Open Demo →</a>
+      </div>
+
+      <div class="demo-card" data-category="business">
+        <div>
+          <div class="card-top">
+            <div class="emoji">🛒</div>
+            <span class="badge">Business</span>
+          </div>
+          <h3>POS</h3>
+          <p>Simple point-of-sale for menu orders.</p>
+        </div>
+        <a href="mini-pos.html">Open Demo →</a>
+      </div>
+
+      <div class="demo-card" data-category="business">
+        <div>
+          <div class="card-top">
+            <div class="emoji">🏘️</div>
+            <span class="badge">Business</span>
+          </div>
+          <h3>Barangay</h3>
+          <p>Resident records and profile directory.</p>
+        </div>
+        <a href="mini-barangay.html">Open Demo →</a>
+      </div>
+
+      <div class="demo-card" data-category="productivity">
+        <div>
+          <div class="card-top">
+            <div class="emoji">✅</div>
+            <span class="badge">Productivity</span>
+          </div>
+          <h3>Task Board</h3>
+          <p>Organize tasks across progress stages.</p>
+        </div>
+        <a href="mini-taskboard.html">Open Demo →</a>
+      </div>
+
+      <div class="demo-card" data-category="productivity">
+        <div>
+          <div class="card-top">
+            <div class="emoji">📅</div>
+            <span class="badge">Productivity</span>
+          </div>
+          <h3>Booking</h3>
+          <p>Appointments and service scheduling demo.</p>
+        </div>
+        <a href="mini-booking.html">Open Demo →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const featuredDemos = [
+      {
+        title: 'PharmaVend',
+        description: 'Built for quick medicine tracking, stock visibility, and simple transactions—ideal for a lightweight healthcare management workflow.',
+        link: 'mini-pharmacy.html'
+      },
+      {
+        title: 'Attendance System',
+        description: 'Designed for fast daily classroom check-ins and easy present/absent tracking across student records.',
+        link: 'mini-attendance.html'
+      },
+      {
+        title: 'Cafe Delights POS',
+        description: 'A compact ordering flow built for quick sales, cart totals, and effortless checkout experiences.',
+        link: 'mini-pos.html'
+      }
+    ];
+
+    const spotlightTitle = document.getElementById('spotlight-title');
+    const spotlightDescription = document.getElementById('spotlight-description');
+    const spotlightLink = document.getElementById('spotlight-link');
+    const spotlightDots = document.querySelectorAll('.spotlight-dot');
+    let spotlightIndex = 0;
+
+    function renderSpotlight(index) {
+      const item = featuredDemos[index];
+      spotlightTitle.textContent = item.title;
+      spotlightDescription.textContent = item.description;
+      spotlightLink.href = item.link;
+      spotlightDots.forEach((dot, dotIndex) => {
+        dot.classList.toggle('active', dotIndex === index);
+      });
+    }
+
+    spotlightDots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        spotlightIndex = Number(dot.dataset.index);
+        renderSpotlight(spotlightIndex);
+      });
+    });
+
+    setInterval(() => {
+      spotlightIndex = (spotlightIndex + 1) % featuredDemos.length;
+      renderSpotlight(spotlightIndex);
+    }, 4000);
+
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const demoCards = document.querySelectorAll('.demo-card');
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+
+        filterButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+
+        demoCards.forEach((card) => {
+          const matches = filter === 'all' || card.dataset.category === filter;
+          card.classList.toggle('hidden', !matches);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
